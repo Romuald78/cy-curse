@@ -34,7 +34,7 @@ void event(void* pUserData, Screen* pScreen, Event* pEvt){
     pDat = (UserData*)pUserData;
 
 
-    debug("event : |0x%x| \n", pEvt->code);
+//    debug("event : |0x%x| \n", pEvt->code);
 }
 
 int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){

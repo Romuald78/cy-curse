@@ -48,21 +48,30 @@
     } GameData;
     
     //------------------------------
-    // FUNCTIONS
+    // ERRORS
     //------------------------------           
-    // Errors
     void rageQuit(const char* fname,
               const int   lineno,
               const char* fxname,
               const int   errorCode,
               const char* format, ...);
     #define RAGE_QUIT(errCode, format, ...) rageQuit(__FILE__, __LINE__, __func__, errCode, format, ##__VA_ARGS__)
-    // debug 
+    
+    //------------------------------
+    // DEBUG
+    //------------------------------           
     void debug(const char* format, ...);
-    // Game functions
+
+    //------------------------------
+    // GAME FUNCTIONS
+    //------------------------------           
     GameData* createGame(int nbCharX, int nbCharY, void* pUserData, Callbacks* pCb, int fps);
     void gameLoop(GameData* pGame);
-    // Draw API TODO
+
+    //------------------------------
+    // DRAW
+    //------------------------------           
     void drawText(Screen* pScreen, int x, int y, char* pText);
+
 #endif
 

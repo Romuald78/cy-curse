@@ -15,16 +15,25 @@ all : $(TEST_EXE) run
 #-----------------------------------------
 # LIB RGR
 #-----------------------------------------
-$(LIB_DIR)/lib$(LIB).so : $(SRC_DIR)/lib$(LIB).c $(INC_DIR)/lib$(LIB).h
+$(LIB_DIR)/error.o : $(SRC_DIR)/error.c $(INC_DIR)/lib$(LIB).h $(INC_DIR)/local.h
+	@gcc -c $< -o $@ -I$(INC_DIR) -fPIC
+
+$(LIB_DIR)/utils.o : $(SRC_DIR)/utils.c $(INC_DIR)/lib$(LIB).h $(INC_DIR)/local.h 
+	@gcc -c $< -o $@ -I$(INC_DIR) -fPIC
+
+$(LIB_DIR)/lib$(LIB).o : $(SRC_DIR)/lib$(LIB).c $(INC_DIR)/lib$(LIB).h $(INC_DIR)/local.h
+	@gcc -c $< -o $@ -I$(INC_DIR) -fPIC
+
+$(LIB_DIR)/lib$(LIB).so : $(LIB_DIR)/lib$(LIB).o $(LIB_DIR)/utils.o $(LIB_DIR)/error.o 
 	@echo "Regenerating [$@]..."
-	gcc $< -o $@ -shared -fPIC -I$(INC_DIR) -lcurses
+	@gcc $^ -o $@ -shared -fPIC -I$(INC_DIR) -lcurses
 	
 #-----------------------------------------
 # MAIN
 #-----------------------------------------
 $(TEST_EXE) : $(LIB_DIR)/lib$(LIB).so test.c
 	@echo "Regenerating [$@]..."
-	gcc test.c -o $@ -I$(INC_DIR) -L$(LIB_DIR) -lcurses -l$(LIB)
+	@gcc test.c -o $@ -I$(INC_DIR) -L$(LIB_DIR) -lcurses -l$(LIB)
 
 #-----------------------------------------
 # RUN
@@ -39,6 +48,7 @@ run : $(TEST_EXE)
 clean :
 	@echo "Removing library..."
 	@rm -f $(LIB_DIR)/lib$(LIB).so
+	@rm -f $(LIB_DIR)/*.o
 	@echo "Removing test executable..."
 	@rm -f $(TEST_EXE)
 	
