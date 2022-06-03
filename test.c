@@ -47,6 +47,9 @@ int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){
     }
     pDat = (UserData*)pUserData;
 
+    if (pDat->carac > 127){
+        return 1;
+    }
 
     return 0;
 }

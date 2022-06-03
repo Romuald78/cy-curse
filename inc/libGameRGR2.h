@@ -14,10 +14,10 @@
     // ENUMS, STRUCTURES AND CALLBACKS
     //------------------------------
     // Key code
-    typedef int KeyCode;
+    typedef unsigned char KeyCode;
     // Event structure
     typedef struct {
-        KeyCode  code;      
+        KeyCode  code;
     } Event;            
     // Canvas Structure
     typedef struct {

@@ -12,6 +12,57 @@ unsigned long getTimeMicros(){
     return (tv.tv_sec*1000000) + (tv.tv_usec/1);
 } 
 
+void checkGame(GameData* pGame, int errCode){
+    // Locals
+    Screen*    pScr = NULL;
+    void*      pDat = NULL;
+    Callbacks* pCb  = NULL;
+    // Check params
+    if(pGame == NULL){
+        RAGE_QUIT(errCode, "Game data pointer NULL !\n");
+    }
+    // Store pointers locally
+    pScr = pGame->pScreen;
+    pDat = pGame->pUserData;
+    pCb  = pGame->pUserCallbacks;
+    // Check internal pointers
+    if(pScr == NULL){
+        RAGE_QUIT(errCode+1, "Game screen pointer NULL !\n");
+    }
+    if(pDat == NULL){
+        RAGE_QUIT(errCode+2, "Game user data pointer NULL !\n");
+    }
+    if(pCb == NULL){
+        RAGE_QUIT(errCode+3, "Game user callback pointer NULL !\n");
+    }
+    
+    
+}
+
+void checkEvent(GameData* pGame){
+    // Locals
+    Screen*    pScr = NULL;
+    void*      pDat = NULL;
+    Callbacks* pCb  = NULL;
+    Event      evt;
+    int        ch = ERR+1;
+    
+    // Check params
+    checkGame(pGame, 3000);
+    // Store pointers locally
+    pScr = pGame->pScreen;
+    pDat = pGame->pUserData;
+    pCb  = pGame->pUserCallbacks;
+    
+    // Process key events TODO    
+    while( (ch=getch()) != ERR ){    
+        evt.code = ch;
+        pCb->cbEvent(pDat, pScr, &evt);            
+    }
+
+
+}
+
 void debug(const char* format, ...){
     // List of arguments
     va_list args;
@@ -61,8 +112,8 @@ GameData* createGame(int        nbCharX,
                      Callbacks* pCb,
                      int        fps){
     // Local vars
-    Screen*   pScreen;
-    GameData* pGame = NULL;
+    Screen*   pScreen = NULL;
+    GameData* pGame   = NULL;
     // Check parameters
     if(nbCharX <= 0 || nbCharY <= 0){
         RAGE_QUIT(1000, "Bad game dimensions : nbCharX=%d / nbCharY=%d\n", nbCharX, nbCharY);
@@ -117,30 +168,16 @@ void gameLoop(GameData* pGame){
     Screen*    pScr = NULL;
     void*      pDat = NULL;
     Callbacks* pCb  = NULL;
-    int        loop = 0;
-    int        ch   = ERR+1;
-    Event      evt;
+    int       loop = 0;
     unsigned long startTime = 0;
     unsigned long endTime   = 0;
     unsigned long frameTime = 0;
     // Check params
-    if(pGame == NULL){
-        RAGE_QUIT(2000, "Game data pointer NULL !\n");
-    }
+    checkGame(pGame, 2000);
     // Store pointers locally
     pScr = pGame->pScreen;
     pDat = pGame->pUserData;
     pCb  = pGame->pUserCallbacks;
-
-    if(pScr == NULL){
-        RAGE_QUIT(2001, "Game screen pointer NULL !\n");
-    }
-    if(pDat == NULL){
-        RAGE_QUIT(2002, "Game user data pointer NULL !\n");
-    }
-    if(pCb == NULL){
-        RAGE_QUIT(2003, "Game user callback pointer NULL !\n");
-    }
     
     // Init of GFX (curses library)
     pWin = initscr();
@@ -154,21 +191,26 @@ void gameLoop(GameData* pGame){
     pCb->cbInit(pDat, pScr);
     
     // First time measurement
-    startTime = getTimeMicros();    
-    // Game loop here
+    startTime = getTimeMicros();  
+      
+    //=======================================
+    // START of game loop
+    //=======================================
     while(loop==0){
         
+        //--------------------------
         // (call event if needed)
-        while( (ch=getch()) != ERR ){    
-            fprintf(stderr, "-key %d", ch);
-            evt.code = ch;
-            pCb->cbEvent(pDat, pScr, &evt);            
-        }
-        fputs("\n", stderr);
+        //--------------------------
+        checkEvent(pGame);
+        
+        //--------------------------
         // (call update)
+        //--------------------------
         loop = pCb->cbUpdate(pDat, pScr, frameTime);
         
+        //--------------------------
         // (call draw + display FPS)
+        //--------------------------
         clear();
         pCb->cbDraw(pDat, pScr);
         if(pGame->displayFPS != 0){
@@ -176,6 +218,10 @@ void gameLoop(GameData* pGame){
             printw("|FPS %ld|", (unsigned long)(0.99 + 1000000.0/frameTime));
         }
         refresh();
+
+        //--------------------------
+        // Wait for next frame
+        //--------------------------
         // Get frame time
         endTime   = getTimeMicros();
         frameTime = endTime - startTime;
@@ -185,8 +231,15 @@ void gameLoop(GameData* pGame){
             usleep(16666-frameTime);
         }       
     }
+    //=======================================
+    // END of game loop
+    //=======================================
+
+    //--------------------------
     // Call finish here and exit
+    //--------------------------
     pCb->cbFinish(pDat);
+
     // Finish curses
     echo();
     endwin();

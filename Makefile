@@ -10,7 +10,7 @@ TEST_EXE = test
 #-----------------------------------------
 # REBUILD
 #-----------------------------------------
-all : $(TEST_EXE)
+all : $(TEST_EXE) run
 
 #-----------------------------------------
 # LIB RGR
@@ -25,6 +25,13 @@ $(LIB_DIR)/lib$(LIB).so : $(SRC_DIR)/lib$(LIB).c $(INC_DIR)/lib$(LIB).h
 $(TEST_EXE) : $(LIB_DIR)/lib$(LIB).so test.c
 	@echo "Regenerating [$@]..."
 	gcc test.c -o $@ -I$(INC_DIR) -L$(LIB_DIR) -lcurses -l$(LIB)
+
+#-----------------------------------------
+# RUN
+#-----------------------------------------
+run : $(TEST_EXE)
+	LD_LIBRARY_PATH=./$(LIB_DIR) ./$(TEST_EXE)
+
 
 #-----------------------------------------
 # CLEAN / REBUILD
