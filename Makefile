@@ -30,7 +30,7 @@ $(TEST_EXE) : $(LIB_DIR)/lib$(LIB).so test.c
 # RUN
 #-----------------------------------------
 run : $(TEST_EXE)
-	LD_LIBRARY_PATH=./$(LIB_DIR) ./$(TEST_EXE)
+	LD_LIBRARY_PATH=./$(LIB_DIR) ./$(TEST_EXE) 2> err.log
 
 
 #-----------------------------------------

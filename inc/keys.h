@@ -3,8 +3,13 @@
 
     typedef enum {
 
-        KEY_UNKNOWN = 0,
+        KEY_NONE = 0,
 
+        EXT_ESC   = 27,
+        EXT_CSI   = ((27<<16)+(91<<8)),
+        EXT_ASCII = 195,
+
+/*
         KEY_A = 'A',
         KEY_B = 'B',
         KEY_C = 'C',
@@ -42,9 +47,9 @@
         KEY_8 = '7',
         KEY_9 = '8',
         KEY_0 = '9',
-    
-        KEY_SPACE  = ' ',
-        KEY_ENTER  = '\n',
+
+        KEY_SPACE  = 32,
+        KEY_ENTER  = 10,
         KEY_ESCAPE = 27,
 
         KEY_DIVIDE    = '\\',
@@ -84,16 +89,16 @@
         EXT_BRACKET      = 91,
 
         KEY_HOME         = ((EXT_ESCAPE<<16)|(EXT_BRACKET<<8)|),
-        KEY_END          = ,
-        KEY_INSERT       = , 
+        KEY_END          = 0,
+        KEY_INSERT       = 0, 
 
-        KEY_PAGEUP       = ,
-        KEY_PAGEDOWN     = ,
+        KEY_PAGEUP       = 0,
+        KEY_PAGEDOWN     = 0,
 
-        KEY_UP           = ,
-        KEY_DOWN         = ,
-        KEY_LEFT         = ,
-        KEY_RIGHT        = ,
+        KEY_UP           = 0,
+        KEY_DOWN         = 0,
+        KEY_LEFT         = 0,
+        KEY_RIGHT        = 0,
 
 
 
@@ -154,7 +159,7 @@
         KEY_KP_EXCLAM = 207,
 
         KEY_KP_PLUSMINUS = 215,
-
+//*/
 
 
     } KeyRGR;

@@ -4,7 +4,7 @@
 #include "libGameRGR2.h"
 
 typedef struct{
-    unsigned char carac;
+    unsigned char dummy;
 } UserData;
 
 void init(void* pUserData, Screen* pScreen){
@@ -16,8 +16,8 @@ void init(void* pUserData, Screen* pScreen){
         RAGE_QUIT(101, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
-    
-    pDat->carac = ' ';
+
+
 }
 
 void event(void* pUserData, Screen* pScreen, Event* pEvt){
@@ -33,8 +33,8 @@ void event(void* pUserData, Screen* pScreen, Event* pEvt){
     }
     pDat = (UserData*)pUserData;
 
-    debug("character=|%c| value=|%3d|\n", pDat->carac, pEvt->code);
-    pDat->carac += 1;
+
+    debug("event : |0x%x| \n", pEvt->code);
 }
 
 int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){
@@ -46,10 +46,6 @@ int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){
         RAGE_QUIT(301, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
-
-    if (pDat->carac > 127){
-        return 1;
-    }
 
     return 0;
 }
@@ -64,8 +60,7 @@ void draw(void* pUserData, Screen* pScreen){
     }
     pDat = (UserData*)pUserData;
 
-    move(10,10);
-    printw("|%c|", pDat->carac);
+
 }
 
 void finish(void* pUserData){

@@ -5,6 +5,7 @@
     // INCLUDES
     //------------------------------
     #include <curses.h>
+    #include "keys.h"
 
     //------------------------------
     // CONSTANTS
@@ -14,7 +15,7 @@
     // ENUMS, STRUCTURES AND CALLBACKS
     //------------------------------
     // Key code
-    typedef unsigned char KeyCode;
+    typedef int KeyCode;
     // Event structure
     typedef struct {
         KeyCode  code;

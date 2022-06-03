@@ -39,14 +39,18 @@ void checkGame(GameData* pGame, int errCode){
     
 }
 
-void checkEvent(GameData* pGame){
+int checkEvent(GameData* pGame){
     // Locals
     Screen*    pScr = NULL;
     void*      pDat = NULL;
     Callbacks* pCb  = NULL;
     Event      evt;
     int        ch = ERR+1;
-    
+    int        value = KEY_NONE;
+    int        size  = 0;
+    int        flagASCII = 0;
+    int        flagESC   = 0;
+    int        flagCSI   = 0;
     // Check params
     checkGame(pGame, 3000);
     // Store pointers locally
@@ -56,11 +60,27 @@ void checkEvent(GameData* pGame){
     
     // Process key events TODO    
     while( (ch=getch()) != ERR ){    
-        evt.code = ch;
-        pCb->cbEvent(pDat, pScr, &evt);            
+        value = (value<<8) | ch;
+        size++;
+        // The character is a simple one (ASCII)
+        flagASCII = (size==1) && (ch != EXT_ESC);        
+        flagESC   = (size==1) && (value == EXT_ESC);
+        flagCSI   = (size==3) && ((value & 0x00FFFF00) == EXT_CSI); 
+        if( flagASCII || flagCSI ){
+            // send ASCII value
+            evt.code = value;
+            pCb->cbEvent(pDat, pScr, &evt);            
+            value    = KEY_NONE;
+            size     = 0;
+        }
     }
-
-
+    
+    if(flagESC){
+        return 1;
+    }
+    else{
+        return 0;
+    }
 }
 
 void debug(const char* format, ...){
@@ -201,12 +221,12 @@ void gameLoop(GameData* pGame){
         //--------------------------
         // (call event if needed)
         //--------------------------
-        checkEvent(pGame);
+        loop |= checkEvent(pGame);
         
         //--------------------------
         // (call update)
         //--------------------------
-        loop = pCb->cbUpdate(pDat, pScr, frameTime);
+        loop |= pCb->cbUpdate(pDat, pScr, frameTime);
         
         //--------------------------
         // (call draw + display FPS)
