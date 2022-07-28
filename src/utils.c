@@ -96,5 +96,14 @@ int checkEvent(GameData* pGame){
     }
 }
 
+/*
+void writeTerm(
+
+    init_pair(1, rand()%8, rand()%8);
+    attron(COLOR_PAIR(1));
+    move(rand()%10, rand()%20);
+    printw("#");
+*/
+
 
 

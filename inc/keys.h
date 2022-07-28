@@ -21,10 +21,10 @@
         KEY_DELETE  = 127,
         KEY_SPACE   = ' ',
 
-        KEY_LEFT         = (EXT_CSI+68),
-        KEY_RIGHT        = (EXT_CSI+67),
-        KEY_UP           = (EXT_CSI+65),
-        KEY_DOWN         = (EXT_CSI+66),
+        KEY_ARROW_L         = (EXT_CSI+68),
+        KEY_ARROW_R        = (EXT_CSI+67),
+        KEY_ARROW_U           = (EXT_CSI+65),
+        KEY_ARROW_D         = (EXT_CSI+66),
 
         KEY_A   = 'A',
         KEY_B   = 'B',

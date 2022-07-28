@@ -82,7 +82,6 @@ void gameLoop(GameData* pGame){
     // Init of GFX (curses library)
     pWin = initscr();
     start_color();
-    init_pair(1, COLOR_YELLOW, COLOR_RED);
     noecho();
     curs_set(0);
     nodelay(pWin, TRUE);
