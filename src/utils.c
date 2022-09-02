@@ -40,12 +40,9 @@ int checkEvent(GameData* pGame){
     Callbacks* pCb  = NULL;
     Event      evt;
     int        ch = ERR+1;
-    int        value = KEY_NONE;
+    long       value = KEY_NONE;
     int        size  = 0;
-    int        flagASCII = 0;
-    int        flagESC   = 0;
-    int        flagCSI   = 0;
-    int        flagSPC   = 0;
+    int        flag  = 0;
     // Check params
     checkGame(pGame, 3000);
     // Store pointers locally
@@ -56,39 +53,41 @@ int checkEvent(GameData* pGame){
     // Get all key values from the stdin
     // Some keys generate several bytes
     while( (ch=getch()) != ERR ){  
-        debug("|%3d|\n", ch);  
         value = (value<<8) | ch;
+        flag  = 0;
         size++;
-        // Retrieve flags
-        flagASCII = (size==1) && (value != EXT_ESC) && (value>=0) && (value<=127);        
-        flagESC   = (size==1) && (value == EXT_ESC);
-        flagSPC   = (size==2) && ((value & 0x0000FF00) == EXT_SPEC);        
-        flagCSI   = (size==3) && ((value & 0x00FFFF00) == EXT_CSI); 
+        // ASCII flag
+        flag |= (((size==1) && (value!=EXT_ESC)) || ((size==2) && (value!=EXT_CSI))) && (value>=0) && (value<=127);        
+        // SPECIAL1 flag2
+        flag |= (size==2) && ((value & 0xFF00      ) == EXT_SPEC1);        
+        flag |= (size==2) && ((value & 0xFF00      ) == EXT_SPEC2);        
+        // CSI flag
+        flag |= (size==3) && ((value & 0xFFFF00    ) == EXT_CSI) && (value != HDR_FN1) && (value != HDR_FN2); 
+        // SS3 flag
+        flag |= (size==3) && ((value & 0xFFFF00    ) == EXT_SS3); 
+        // FUNCTION flags
+        flag |= (size==5) && ((value & 0xFFFFFF00FF) == EXT_FN1); 
+        flag |= (size==5) && ((value & 0xFFFFFF00FF) == EXT_FN2); 
+        flag |= (size==2) && ((value & 0xFF00      ) == EXT_FN3); 
         
-        // DEBUG
-        if (flagASCII){
-            if(value>='a' && value <='z'){
-                value -= 32;
-            }
-            debug("ASCII   |%c/%d| \n", value, value);
-        }
-        if (flagCSI){
-            debug("CSI     |%d/%d| \n", value&0xFF,value&0xFF);
-        }
-        if ( flagSPC ){
-            debug("SPECIAL |%d/%d| \n", value&0xFF,value&0xFF);
-        }
-        // END DEBUG
+        //* // DEBUG
+        debug("|%3d| => [%0p]\n", ch, value); 
+        if( flag ){
+            debug("===>>>\n");
+        } 
+        // END DEBUG */
         
-        if( flagASCII || flagCSI || flagSPC ){
+        // Send event to user code
+        if( flag ){
             evt.code = value;
             pCb->cbEvent(pDat, pScr, &evt);            
-            value    = KEY_NONE;
-            size     = 0;
+            //value    = KEY_NONE;
+            //size     = 0;
         }
     }
     
-    if(flagESC){
+    // ESCAPE flag : exit request
+    if( (size==1) && (value == EXT_ESC) ){
         return 1;
     }
     else{

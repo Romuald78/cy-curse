@@ -15,7 +15,7 @@
     // ENUMS, STRUCTURES AND CALLBACKS
     //------------------------------
     // Key code
-    typedef int KeyCode;
+    typedef long KeyCode;
     // Event structure
     typedef struct {
         KeyCode  code;

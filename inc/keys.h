@@ -4,8 +4,14 @@
     // Header of special characters
     #define EXT_ESC   27
     #define EXT_CSI   ((27<<16)+(91<<8))
-//    #define EXT_SS3   ((27<<24)+(79<<8))
-    #define EXT_SPEC  (195<<8)
+    #define EXT_SS3   ((27<<16)+(79<<8))
+    #define EXT_SPEC1 (194<<8)
+    #define EXT_SPEC2 (195<<8)
+    #define HDR_FN1   ((long)EXT_CSI+49)
+    #define HDR_FN2   ((long)EXT_CSI+50)
+    #define EXT_FN1   ((HDR_FN1<<16)+(126))
+    #define EXT_FN2   ((HDR_FN2<<16)+(126))
+    #define EXT_FN3   (1<<8)
 
     // Enum for all the key codes
     typedef enum {
@@ -21,11 +27,23 @@
         KEY_DELETE  = 127,
         KEY_SPACE   = ' ',
 
-        KEY_ARROW_L         = (EXT_CSI+68),
-        KEY_ARROW_R        = (EXT_CSI+67),
-        KEY_ARROW_U           = (EXT_CSI+65),
-        KEY_ARROW_D         = (EXT_CSI+66),
+        KEY_ARROW_LEFT  = (EXT_CSI+68),
+        KEY_ARROW_RIGHT = (EXT_CSI+67),
+        KEY_ARROW_UP    = (EXT_CSI+65),
+        KEY_ARROW_DOWN  = (EXT_CSI+66),
 
+        KEY_F1  = (EXT_SS3+80),  
+        KEY_F2  = (EXT_SS3+81),  
+        KEY_F3  = (EXT_SS3+82),  
+        KEY_F4  = (EXT_SS3+83),  
+        KEY_F5  = (EXT_FN1+(53<<8)),
+        KEY_F6  = (EXT_FN1+(55<<8)),
+        KEY_F7  = (EXT_FN1+(56<<8)),
+        KEY_F8  = (EXT_FN1+(57<<8)),
+        KEY_F9  = (EXT_FN2+(48<<8)),
+        KEY_F11 = (EXT_FN3+154),
+        KEY_F12 = (EXT_FN2+(52<<8)),
+        
         KEY_A   = 'A',
         KEY_B   = 'B',
         KEY_C   = 'C',
@@ -63,57 +81,42 @@
         KEY_8   = '7',
         KEY_9   = '8',
         KEY_0   = '9',
+
+        KEY_MINUS           = '-',
+        KEY_EQUALS          = '=',
+        KEY_LEFTBRACKET     = '[',
+        KEY_RIGHTBRACKET    = ']',
+        KEY_BACKSLASH       = '\\', 
+        KEY_NONUSHASH       = '/', 
+        KEY_SEMICOLON       = ';',
+        KEY_APOSTROPHE      = '\'',
+        KEY_GRAVE           = '`', 
+        KEY_COMMA           = ',',
+        KEY_PERIOD          = '.',
+        KEY_SLASH           = '/',
+
+        KEY_SQUARE    = (EXT_SPEC1+178), 
+        KEY_AMPERSAND = '&',               
+        KEY_E_ACUTE   = (EXT_SPEC2+169),
+        KEY_QUOTE2    = '"', 
+        KEY_QUOTE1    = '\'',
+        KEY_E_GRAVE   = (EXT_SPEC2+168),
+        KEY_C_CEDILLA = (EXT_SPEC2+167),
+        KEY_A_GRAVE   = (EXT_SPEC2+160),
+        KEY_DEGREES   = (EXT_SPEC1+176),         
         
-        KEY_E_ACUTE   = (EXT_SPEC+169),
-        KEY_E_GRAVE   = (EXT_SPEC+168),
-        KEY_C_CEDILLA = (EXT_SPEC+167),
-        KEY_A_GRAVE   = (EXT_SPEC+160),
+
         
 /*
-
-        
-
-
-
-        
-        
-        
-        KEY_F1  = (58 | (1<<30)),
-        KEY_F2  = (59 | (1<<30)),
-        KEY_F3  = (60 | (1<<30)),
-        KEY_F4  = (61 | (1<<30)),
-        KEY_F5  = (62 | (1<<30)),
-        KEY_F6  = (63 | (1<<30)),
-        KEY_F7  = (64 | (1<<30)),
-        KEY_F8  = (65 | (1<<30)),
-        KEY_F9  = (66 | (1<<30)),
-        KEY_F10 = (67 | (1<<30)),
-        KEY_F11 = (68 | (1<<30)),
-        KEY_F12 = (69 | (1<<30)),
 
         KEY_PAGEUP       = 0,
         KEY_PAGEDOWN     = 0,
 
 
-        EXT_ESCAPE       = 27,
-        EXT_BRACKET      = 91,
-
         KEY_HOME         = ((EXT_ESCAPE<<16)|(EXT_BRACKET<<8)|),
         KEY_END          = 0,
         KEY_INSERT       = 0, 
 
-        KEY_MINUS           = 45,
-        KEY_EQUALS          = 46,
-        KEY_LEFTBRACKET     = 47,
-        KEY_RIGHTBRACKET    = 48,
-        KEY_BACKSLASH       = 49, 
-        KEY_NONUSHASH       = 50, 
-        KEY_SEMICOLON       = 51,
-        KEY_APOSTROPHE      = 52,
-        KEY_GRAVE           = 53, 
-        KEY_COMMA           = 54,
-        KEY_PERIOD          = 55,
-        KEY_SLASH           = 56,
 
         KEY_PRINTSCREEN  = (70 | (1<<30)),
         KEY_SCROLLLOCK   = (71 | (1<<30)),
@@ -143,6 +146,28 @@
         KEY_KP_EXCLAM = 207,
 
         KEY_KP_PLUSMINUS = 215
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 //*/
 
 
