@@ -6,11 +6,12 @@ INC_DIR  = inc
 SRC_DIR  = src
 LIB_DIR  = lib
 TEST_EXE = test
+CURSES   = ncursesw
 
 #-----------------------------------------
 # REBUILD
 #-----------------------------------------
-all : $(TEST_EXE) run
+all : $(TEST_EXE) 
 
 #-----------------------------------------
 # LIB RGR
@@ -26,14 +27,14 @@ $(LIB_DIR)/lib$(LIB).o : $(SRC_DIR)/lib$(LIB).c $(INC_DIR)/lib$(LIB).h $(INC_DIR
 
 $(LIB_DIR)/lib$(LIB).so : $(LIB_DIR)/lib$(LIB).o $(LIB_DIR)/utils.o $(LIB_DIR)/error.o 
 	@echo "Regenerating [$@]..."
-	@gcc $^ -o $@ -shared -fPIC -I$(INC_DIR) -lcurses
+	@gcc $^ -o $@ -shared -fPIC -I$(INC_DIR) -l$(CURSES)
 	
 #-----------------------------------------
 # MAIN
 #-----------------------------------------
 $(TEST_EXE) : $(LIB_DIR)/lib$(LIB).so test.c
 	@echo "Regenerating [$@]..."
-	@gcc test.c -o $@ -I$(INC_DIR) -L$(LIB_DIR) -lcurses -l$(LIB)
+	@gcc test.c -o $@ -I$(INC_DIR) -L$(LIB_DIR) -l$(CURSES) -l$(LIB)
 
 #-----------------------------------------
 # RUN

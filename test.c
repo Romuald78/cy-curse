@@ -3,10 +3,14 @@
 
 #include "libGameRGR2.h"
 
+#define GRASS     1
+#define CHARACTER 2
+
+
 // User data for the game
 typedef struct{
-    unsigned char x;
-    unsigned char y;
+    char x;
+    char y;
 } UserData;
 
 
@@ -17,16 +21,25 @@ typedef struct{
 void init(void* pUserData, Screen* pScreen){
     UserData* pDat = NULL;
     if(pUserData==NULL){
-        RAGE_QUIT(100, "Game user data pointer NULL !\n");    
+        RAGE_QUIT(10, "Game user data pointer NULL !\n");    
     }
     if(pScreen==NULL){
-        RAGE_QUIT(101, "Game screen pointer NULL !\n");    
+        RAGE_QUIT(11, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
 
     // User code here
     
-
+    
+    // init position
+    pDat->x = 10;
+    pDat->y = 10;
+    // set grass color
+    setColor(GRASS, 128,255,128);
+    setColorPair(1, GRASS, GRASS);
+    // Set player color 
+    setColor(CHARACTER, 128, 128, 255);   
+    setColorPair(2, CHARACTER, GRASS);
 
 }
 
@@ -36,13 +49,13 @@ void init(void* pUserData, Screen* pScreen){
 void event(void* pUserData, Screen* pScreen, Event* pEvt){
     UserData* pDat = NULL;
     if(pUserData==NULL){
-        RAGE_QUIT(200, "Game user data pointer NULL !\n");    
+        RAGE_QUIT(20, "Game user data pointer NULL !\n");    
     }
     if(pScreen==NULL){
-        RAGE_QUIT(201, "Game screen pointer NULL !\n");    
+        RAGE_QUIT(21, "Game screen pointer NULL !\n");    
     }
     if(pEvt==NULL){
-        RAGE_QUIT(202, "Game screen pointer NULL !\n");    
+        RAGE_QUIT(22, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
 
@@ -50,16 +63,16 @@ void event(void* pUserData, Screen* pScreen, Event* pEvt){
     
     switch(pEvt->code){
         case KEY_ARROW_LEFT :
-            debug("LEFT\n");
+            pDat->x--;
             break;
         case KEY_ARROW_RIGHT :
-            debug("RIGHT\n");
+            pDat->x++;
             break;
         case KEY_ARROW_UP :
-            debug("UP\n");
+            pDat->y--;
             break;
         case KEY_ARROW_DOWN :
-            debug("DOWN\n");
+            pDat->y++;
             break;
 
         case KEY_TAB :
@@ -126,10 +139,10 @@ void event(void* pUserData, Screen* pScreen, Event* pEvt){
 int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){
     UserData* pDat = NULL;
     if(pUserData==NULL){
-        RAGE_QUIT(300, "Game user data pointer NULL !\n");    
+        RAGE_QUIT(30, "Game user data pointer NULL !\n");    
     }
     if(pScreen==NULL){
-        RAGE_QUIT(301, "Game screen pointer NULL !\n");    
+        RAGE_QUIT(31, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
 
@@ -147,17 +160,21 @@ int  update(void* pUserData, Screen* pScreen, unsigned long deltaTime){
 void draw(void* pUserData, Screen* pScreen){
     UserData* pDat = NULL;
     if(pUserData==NULL){
-        RAGE_QUIT(400, "Game user data pointer NULL !\n");    
+        RAGE_QUIT(40, "Game user data pointer NULL !\n");    
     }
     if(pScreen==NULL){
-        RAGE_QUIT(401, "Game screen pointer NULL !\n");    
+        RAGE_QUIT(41, "Game screen pointer NULL !\n");    
     }
     pDat = (UserData*)pUserData;
 
     // user code here
+    for(int y=0; y<(pScreen->height); y++){
+        drawLine(pScreen, 0, y, pScreen->width, '.', 2);
+    }
 
-
-
+    drawText(pScreen, pDat->x, pDat->y,   "🐎🐇"  , 2);
+    
+    
 }
 
 //-------------------------------------------------------------
@@ -194,7 +211,7 @@ int main(int argc, char** argv){
     cb.cbFinish = finish;
 
     // Create the game structure
-    pGame = createGame(20,10, &data, &cb, 1);
+    pGame = createGame(30,15, &data, &cb, 0);
     
     // Launch the game 
     gameLoop(pGame);

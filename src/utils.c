@@ -1,4 +1,5 @@
 #include <sys/time.h>
+#include <string.h>
 
 #include "libGameRGR2.h"
 
@@ -95,14 +96,61 @@ int checkEvent(GameData* pGame){
     }
 }
 
-/*
-void writeTerm(
 
-    init_pair(1, rand()%8, rand()%8);
-    attron(COLOR_PAIR(1));
-    move(rand()%10, rand()%20);
-    printw("#");
-*/
+//-----------------------------------------
+// DRAW
+//-----------------------------------------
+void setColor(unsigned char id, unsigned char r, unsigned char g, unsigned char b){
+    int rr = (1000*r)/255;
+    int gg = (1000*g)/255;
+    int bb = (1000*b)/255;
+    init_color(id, rr, gg, bb);
+}
+void setColorPair(unsigned char id, unsigned char txtId, unsigned char backId){
+    init_pair(id, txtId, backId);
+}
+void drawText(Screen* pScr, int x, int y, char* pText, int clrId){
+    // Local buffer to copy string
+    char pWrite[256] = {0};
+    if(pText == NULL){
+        RAGE_QUIT(50, "Text pointer NULL !\n");
+    }
+    if(pScr == NULL){
+        RAGE_QUIT(51, "Screen pointer NULL !\n");
+    }
+    // TODO issue when trying to print the trailing chars of a string started on the left edge of the screen !!
+    // TODO issue when printing an emoji : when reaching the right border of the screen
+    if(x>=0 && y>=0 && x<pScr->width && y<pScr->height){
+        move(y, x);
+        attron(COLOR_PAIR(clrId));
+        // limit the size of the string in order to avoid printing outside the edges
+        int sz  = pScr->width - x;
+        int len = strlen(pText);
+        if(sz > len+1){
+            sz = len;
+        }
+        if(len > 255){
+            RAGE_QUIT(52, "pText string exceeds 255 chars !\n");            
+        } 
+        strcpy(pWrite, pText);
+        pWrite[sz] = '\0';        
+        printw(pWrite);
+        //attroff(COLOR_PAIR(clrId));
+    }
+}
+void drawLine(Screen* pScr, int x, int y, int w, char ch, int clrId){
+    if(pScr == NULL){
+        RAGE_QUIT(60, "Screen pointer NULL !\n");
+    }
+    move(y, x);
+    attron(COLOR_PAIR(clrId));
+    for(int dx=0; dx<w && (x+dx)<pScr->width; dx++){
+        if(x+dx >= 0){
+            mvaddch(y, x+dx, ch);    
+        }
+    }    
+}
+
 
 
 

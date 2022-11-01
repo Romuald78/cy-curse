@@ -14,42 +14,43 @@ GameData* createGame(int        nbCharX,
     // Local vars
     Screen*   pScreen = NULL;
     GameData* pGame   = NULL;
+    
     // Check parameters
     if(nbCharX <= 0 || nbCharY <= 0){
-        RAGE_QUIT(1000, "Bad game dimensions : nbCharX=%d / nbCharY=%d\n", nbCharX, nbCharY);
+        RAGE_QUIT(100, "Bad game dimensions : nbCharX=%d / nbCharY=%d\n", nbCharX, nbCharY);
     }
     // Check parameter pointers
     if(pUserData == NULL){
-        RAGE_QUIT(1010, "Empty user data pointer !\n");
+        RAGE_QUIT(110, "Empty user data pointer !\n");
     }
     if(pCb == NULL){
-        RAGE_QUIT(1020, "Empty callback pointer !\n");
+        RAGE_QUIT(120, "Empty callback pointer !\n");
     }
     // Check callbacks
     if( pCb->cbInit == NULL ){
-        RAGE_QUIT(1030, "Empty INIT callback pointer !\n");
+        RAGE_QUIT(130, "Empty INIT callback pointer !\n");
     }        
     if( pCb->cbEvent == NULL ){
-        RAGE_QUIT(1031, "Empty EVENT callback pointer !\n");
+        RAGE_QUIT(131, "Empty EVENT callback pointer !\n");
     }                
     if( pCb->cbUpdate == NULL ){
-        RAGE_QUIT(1032, "Empty UPDATE callback pointer !\n");
+        RAGE_QUIT(132, "Empty UPDATE callback pointer !\n");
     }        
     if( pCb->cbDraw == NULL ){
-        RAGE_QUIT(1033, "Empty DRAW callback pointer !\n");
+        RAGE_QUIT(133, "Empty DRAW callback pointer !\n");
     }        
     if( pCb->cbFinish == NULL ){
-        RAGE_QUIT(1034, "Empty FINISH callback pointer !\n");    
+        RAGE_QUIT(134, "Empty FINISH callback pointer !\n");    
     }        
     // Allocate SCREEN structure
     pScreen = malloc( sizeof(Screen) );
     if(pScreen == NULL){
-        RAGE_QUIT(1040, "Screen malloc failed !\n");    
+        RAGE_QUIT(140, "Screen malloc failed !\n");    
     }
     // Allocate Game struct
     pGame = malloc( sizeof(GameData) );
     if( pGame==NULL ){
-        RAGE_QUIT(1050, "Screen malloc failed !\n");    
+        RAGE_QUIT(150, "Screen malloc failed !\n");    
     }
     // Fill game structure
     pScreen->width        = nbCharX;
@@ -73,12 +74,15 @@ void gameLoop(GameData* pGame){
     unsigned long endTime   = 0;
     unsigned long frameTime = 0;
     // Check params
-    checkGame(pGame, 2000);
+    checkGame(pGame, 200);
     // Store pointers locally
     pScr = pGame->pScreen;
     pDat = pGame->pUserData;
     pCb  = pGame->pUserCallbacks;
     
+    // Locales
+    setlocale(LC_ALL, "");
+        
     // Init of GFX (curses library)
     pWin = initscr();
     start_color();
@@ -86,6 +90,8 @@ void gameLoop(GameData* pGame){
     curs_set(0);
     nodelay(pWin, TRUE);
     
+    init_pair(1, 7, 0);   
+
     // Call init here
     pCb->cbInit(pDat, pScr);
     
@@ -110,7 +116,9 @@ void gameLoop(GameData* pGame){
         //--------------------------
         // (call draw + display FPS)
         //--------------------------
-        clear();
+        // Clear must not be called to avoid flickering
+        // BUT the user MUST ensure to redraw the whole part of the screen
+        //clear();
         pCb->cbDraw(pDat, pScr);
         if(pGame->displayFPS != 0){
             move(0,0);

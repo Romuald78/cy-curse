@@ -1,15 +1,18 @@
 #ifndef LIBGAMERGR_H
     #define LIBGAMERGR_H
 
+
     //------------------------------
     // INCLUDES
     //------------------------------
+    #include <locale.h>
     #include <curses.h>
     #include "keys.h"
 
     //------------------------------
     // CONSTANTS
     //------------------------------
+
     
     //------------------------------
     // ENUMS, STRUCTURES AND CALLBACKS
@@ -70,8 +73,11 @@
 
     //------------------------------
     // DRAW
-    //------------------------------           
-    void drawText(Screen* pScreen, int x, int y, char* pText);
+    //------------------------------    
+    void setColor    (unsigned char id, unsigned char r, unsigned char g, unsigned char b);
+    void setColorPair(unsigned char id, unsigned char txtId, unsigned char backId);
+    void drawText    (Screen* pScr, int x, int y, char* pText   , int clrId);
+    void drawLine    (Screen* pScr, int x, int y, int w, char ch, int clrId);
 
 #endif
 
